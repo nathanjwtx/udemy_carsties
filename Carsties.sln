@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionService", "src\AuctionService\AuctionService\AuctionService.csproj", "{A1695255-E93F-476C-91CB-EC2D1617C209}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionService", "src\AuctionService\AuctionService.csproj", "{A1695255-E93F-476C-91CB-EC2D1617C209}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
