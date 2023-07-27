@@ -1,4 +1,6 @@
-﻿namespace AuctionService;
+﻿using AuctionService.Models;
+
+namespace AuctionService.DTOs;
 
 public class AuctionDto
 {
@@ -7,7 +9,7 @@ public class AuctionDto
     public DateTime UpdatedAt { get; set; }
     public DateTime AuctionEnd { get; set; }
     public string Seller { get; set; }
-    public string? Winner { get; set; }
+    public string Winner { get; set; }
     public string Make { get; set; }
     public string Model { get; set; }
     public int Year { get; set; }

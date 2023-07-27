@@ -1,3 +1,14 @@
 {
-    "dotnet.defaultSolution": "Carsties.sln"
+    "dotnet.defaultSolution": "Carsties.sln",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Carsties",
+            "database": "auctions",
+            "username": "postgres"
+        }
+    ]
 }
