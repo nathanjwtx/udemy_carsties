@@ -1,4 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using AuctionService.DTOs;
 using AuctionService.Models;
 using AutoMapper;
@@ -48,15 +50,21 @@ public class AuctionsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Item>> MakeNewAuction([FromBody] CreateAuctionDto createAuctionDto)
+    public async Task<ActionResult<CreateAuctionReturnDto>> MakeNewAuction([FromBody] CreateAuctionDto createAuctionDto)
     {
         if (createAuctionDto == null) return BadRequest();
 
         var auction = _mapper.Map<Auction>(createAuctionDto);
 
         await _context.AddAsync<Auction>(auction);
-        await _context.SaveChangesAsync();
-
-        return Ok();
+        var result = await _context.SaveChangesAsync();
+        
+        // result will return +1 for each change successfully saved
+        if (result > 0)
+        {
+            return Created($"/api/auctions/{auction.Id}", _mapper.Map<CreateAuctionReturnDto>(auction.Item));
+        }
+    
+        return BadRequest("Something bad happened!"); 
     }
 }
