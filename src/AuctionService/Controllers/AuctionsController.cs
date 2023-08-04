@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using AuctionService.DTOs;
 using AuctionService.Models;
 using AutoMapper;
+using MassTransit.Initializers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,5 +67,39 @@ public class AuctionsController : ControllerBase
         }
     
         return BadRequest("Something bad happened!"); 
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<Auction>> UpdateAuction([FromBody] UpdateAuctionDto updateAuctionDto, Guid id)
+    {
+        var auction = await _context.Auctions
+            .Include(x => x.Item)
+            .FirstOrDefaultAsync(a => a.Id == id)
+            .Select(a => new UpdateAuctionDto
+            {
+                Color = a.Item.Color,
+                Make = a.Item.Make,
+                Mileage = a.Item.Mileage,
+                Model = a.Item.Model,
+                Year = a.Item.Year
+            }).ConfigureAwait(false);
+
+        // if (auction == null) return BadRequest("Oops, something went wrong!");
+        //
+        // auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
+        // if (!string.IsNullOrEmpty(updateAuctionDto.Model))
+        // {
+        //     auction.Item.Model = updateAuctionDto.Model;
+        // }
+        // auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
+        // auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Year;
+        // auction.Item.Color = updateAuctionDto.Color;
+        //
+        // _context.Auctions.Update(auction);
+        // await _context.SaveChangesAsync().ConfigureAwait(false);
+
+        return Ok(auction);
     }
 }
