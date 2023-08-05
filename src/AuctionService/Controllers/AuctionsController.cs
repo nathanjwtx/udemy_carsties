@@ -72,34 +72,50 @@ public class AuctionsController : ControllerBase
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<Auction>> UpdateAuction([FromBody] UpdateAuctionDto updateAuctionDto, Guid id)
+    public async Task<ActionResult> UpdateAuction([FromBody] UpdateAuctionDto updateAuctionDto, Guid id)
     {
         var auction = await _context.Auctions
             .Include(x => x.Item)
             .FirstOrDefaultAsync(a => a.Id == id)
-            .Select(a => new UpdateAuctionDto
-            {
-                Color = a.Item.Color,
-                Make = a.Item.Make,
-                Mileage = a.Item.Mileage,
-                Model = a.Item.Model,
-                Year = a.Item.Year
-            }).ConfigureAwait(false);
+            .ConfigureAwait(false);
 
-        // if (auction == null) return BadRequest("Oops, something went wrong!");
-        //
-        // auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
-        // if (!string.IsNullOrEmpty(updateAuctionDto.Model))
-        // {
-        //     auction.Item.Model = updateAuctionDto.Model;
-        // }
-        // auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
-        // auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Year;
-        // auction.Item.Color = updateAuctionDto.Color;
-        //
-        // _context.Auctions.Update(auction);
-        // await _context.SaveChangesAsync().ConfigureAwait(false);
+        if (auction == null) return BadRequest("Oops, something went wrong!");
 
-        return Ok(auction);
+        if (!string.IsNullOrEmpty(updateAuctionDto.Model))
+        {
+            auction.Item.Model = updateAuctionDto.Model;
+        }
+
+        if (!string.IsNullOrEmpty(updateAuctionDto.Model))
+        {
+            auction.Item.Model = updateAuctionDto.Model;
+        }
+
+        auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
+        auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Year;
+        if (!string.IsNullOrEmpty(updateAuctionDto.Color))
+        {
+            auction.Item.Color = updateAuctionDto.Color;
+        }
+
+        _context.Auctions.Update(auction);
+        await _context.SaveChangesAsync().ConfigureAwait(false);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> DeleteAuction(Guid id)
+    {
+        var auction = await _context.Auctions.FindAsync(id).ConfigureAwait(false);
+
+        if (auction == null) return NotFound();
+
+        _context.Remove(auction);
+        var result = await _context.SaveChangesAsync().ConfigureAwait(false);
+
+        if (result <= 0) return BadRequest("Could not update db");
+
+        return Ok();
     }
 }
