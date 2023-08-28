@@ -1,7 +1,6 @@
 ﻿using AuctionService.DTOs;
 using AuctionService.Models;
 using AutoMapper;
-using MassTransit.Scheduling;
 
 namespace AuctionService.RequestHelpers;
 public class MappingProfiles : Profile
